@@ -23,7 +23,7 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["User"];
+                    "application/json": components["schemas"]["CreateUserSchema"];
                 };
             };
             responses: {
@@ -34,11 +34,11 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            _id?: string;
-                            name?: string;
-                            email?: string;
-                            token?: string;
+                            success: boolean;
+                            _id: string;
+                            name: string;
+                            email: string;
+                            token: string;
                         };
                     };
                 };
@@ -85,9 +85,9 @@ export interface paths {
                 content: {
                     "application/json": {
                         /** @description User email */
-                        email?: string;
+                        email: string;
                         /** @description User password */
-                        password?: string;
+                        password: string;
                     };
                 };
             };
@@ -99,11 +99,11 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            _id?: string;
-                            name?: string;
-                            email?: string;
-                            token?: string;
+                            success: boolean;
+                            _id: string;
+                            name: string;
+                            email: string;
+                            token: string;
                         };
                     };
                 };
@@ -202,7 +202,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             success?: boolean;
-                            data?: components["schemas"]["User"];
+                            data?: components["schemas"]["UserResponse"];
                         };
                     };
                 };
@@ -259,34 +259,9 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            count?: number;
-                            data?: {
-                                _id?: string;
-                                user?: {
-                                    _id?: string;
-                                    name?: string;
-                                    email?: string;
-                                };
-                                exhibition?: {
-                                    _id?: string;
-                                    name?: string;
-                                    description?: string;
-                                    venue?: string;
-                                    /** Format: date-time */
-                                    startDate?: string;
-                                    durationDay?: number;
-                                    smallBoothQuota?: number;
-                                    bigBoothQuota?: number;
-                                };
-                                /** @enum {string} */
-                                boothType?: "small" | "big";
-                                amount?: number;
-                                /** Format: date-time */
-                                createdAt?: string;
-                                /** Format: date-time */
-                                updatedAt?: string;
-                            }[];
+                            success: boolean;
+                            count: number;
+                            data: components["schemas"]["PopulatedBooking"][];
                         };
                     };
                 };
@@ -341,33 +316,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            data?: {
-                                _id?: string;
-                                user?: {
-                                    _id?: string;
-                                    name?: string;
-                                    email?: string;
-                                };
-                                exhibition?: {
-                                    _id?: string;
-                                    name?: string;
-                                    description?: string;
-                                    venue?: string;
-                                    /** Format: date-time */
-                                    startDate?: string;
-                                    durationDay?: number;
-                                    smallBoothQuota?: number;
-                                    bigBoothQuota?: number;
-                                };
-                                /** @enum {string} */
-                                boothType?: "small" | "big";
-                                amount?: number;
-                                /** Format: date-time */
-                                createdAt?: string;
-                                /** Format: date-time */
-                                updatedAt?: string;
-                            };
+                            success: boolean;
+                            data: components["schemas"]["PopulatedBooking"];
                         };
                     };
                 };
@@ -414,7 +364,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get a booking by ID (admin can view any booking, member can only view their own) */
+        /**
+         * Get a booking by ID
+         * @description admin can view any booking, member can only view their own
+         */
         get: {
             parameters: {
                 query?: never;
@@ -434,8 +387,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            data?: components["schemas"]["Booking"];
+                            success: boolean;
+                            data: components["schemas"]["PopulatedBooking"];
                         };
                     };
                 };
@@ -455,7 +408,10 @@ export interface paths {
                 };
             };
         };
-        /** Update booking (admin can update any booking, member can only update their own) */
+        /**
+         * Update booking
+         * @description admin can update any booking, member can only update their own
+         */
         put: {
             parameters: {
                 query?: never;
@@ -487,8 +443,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            data?: components["schemas"]["Booking"];
+                            success: boolean;
+                            data: components["schemas"]["PopulatedBooking"];
                         };
                     };
                 };
@@ -516,7 +472,10 @@ export interface paths {
             };
         };
         post?: never;
-        /** Delete booking (admin can delete any booking, member can only delete their own) */
+        /**
+         * Delete booking
+         * @description admin can delete any booking, member can only delete their own
+         */
         delete: {
             parameters: {
                 query?: never;
@@ -566,7 +525,7 @@ export interface paths {
         };
         /**
          * Get all exhibitions
-         * @description Retrieve all available exhibitions. Accessible by all users.
+         * @description Retrieve all available exhibitions with populated bookings. Accessible by all users.
          */
         get: {
             parameters: {
@@ -586,7 +545,7 @@ export interface paths {
                         "application/json": {
                             success?: boolean;
                             count?: number;
-                            data?: components["schemas"]["Exhibition"][];
+                            data?: components["schemas"]["PopulatedExhibitionResponse"][];
                         };
                     };
                 };
@@ -613,7 +572,7 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["Exhibition"];
+                    "application/json": components["schemas"]["CreateExhibitionRequest"];
                 };
             };
             responses: {
@@ -625,7 +584,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             success?: boolean;
-                            data?: components["schemas"]["Exhibition"];
+                            data?: components["schemas"]["ExhibitionResponse"];
                         };
                     };
                 };
@@ -667,7 +626,7 @@ export interface paths {
         };
         /**
          * Get an exhibition by ID
-         * @description Retrieve details of a specific exhibition. Accessible by all users.
+         * @description Retrieve details of a specific exhibition with populated bookings. Accessible by all users.
          */
         get: {
             parameters: {
@@ -689,7 +648,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             success?: boolean;
-                            data?: components["schemas"]["Exhibition"];
+                            data?: components["schemas"]["PopulatedExhibitionResponse"];
                         };
                     };
                 };
@@ -718,7 +677,7 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["Exhibition"];
+                    "application/json": components["schemas"]["UpdateExhibitionRequest"];
                 };
             };
             responses: {
@@ -730,7 +689,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             success?: boolean;
-                            data?: components["schemas"]["Exhibition"];
+                            data?: components["schemas"]["ExhibitionResponse"];
                         };
                     };
                 };
@@ -788,8 +747,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            message?: string;
+                            success: boolean;
+                            message: string;
                         };
                     };
                 };
@@ -825,7 +784,7 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        User: {
+        CreateUserSchema: {
             /** @description Name of user */
             name: string;
             /** @description Email of user */
@@ -846,13 +805,34 @@ export interface components {
              */
             createdAt?: string;
         };
-        Booking: {
+        UserResponse: {
+            /** @description Name of user */
+            name: string;
+            /** @description Email of user */
+            email: string;
+            /** @description Telephone number of user */
+            tel: string;
+            /**
+             * @description Role of user (member or admin), default is member
+             * @enum {string}
+             */
+            role: "member" | "admin";
+            /**
+             * Format: date
+             * @description Date of creation (default is current date-time)
+             * @example 2023-08-20
+             */
+            createdAt: string;
+        };
+        BookingResponse: {
             /** @description Auto-generated MongoDB ObjectId */
-            readonly _id?: string;
+            readonly _id: string;
             /** @description Reference to the user who made the booking */
-            readonly user?: string;
-            /** @description Reference to the exhibition being booked */
-            exhibition: string;
+            readonly user: {
+                _id: string;
+                name: string;
+                email: string;
+            };
             /**
              * @description Type of booth (small/big)
              * @enum {string}
@@ -864,16 +844,72 @@ export interface components {
              * Format: date-time
              * @description Auto-generated timestamp of creation
              */
-            readonly createdAt?: string;
+            readonly createdAt: string;
             /**
              * Format: date-time
              * @description Auto-generated timestamp of last update
              */
-            readonly updatedAt?: string;
+            readonly updatedAt: string;
         };
-        Exhibition: {
+        PopulatedBooking: components["schemas"]["BookingResponse"] & {
+            /** @description Reference to the exhibition being booked */
+            exhibition: {
+                _id: string;
+                name: string;
+                description: string;
+                venue: string;
+                /** Format: date-time */
+                startDate: string;
+                durationDay: number;
+                smallBoothQuota: number;
+                bigBoothQuota: number;
+            };
+        };
+        CreateExhibitionRequest: {
+            /** @description Name of the exhibition */
+            name: string;
+            /** @description Detailed description of the exhibition */
+            description: string;
+            /** @description Location where the exhibition will be held */
+            venue: string;
+            /**
+             * Format: date
+             * @description Start date of the exhibition (cannot be earlier than current date)
+             */
+            startDate: string;
+            /** @description Duration of exhibition in days */
+            durationDay: number;
+            /** @description Number of small booths available */
+            smallBoothQuota: number;
+            /** @description Number of big booths available */
+            bigBoothQuota: number;
+            /** @description URL of the exhibition poster picture */
+            posterPicture: string;
+        };
+        UpdateExhibitionRequest: {
+            /** @description Name of the exhibition */
+            name?: string;
+            /** @description Detailed description of the exhibition */
+            description?: string;
+            /** @description Location where the exhibition will be held */
+            venue?: string;
+            /**
+             * Format: date
+             * @description Start date of the exhibition (cannot be earlier than current date)
+             */
+            startDate?: string;
+            /** @description Duration of exhibition in days */
+            durationDay?: number;
+            /** @description Number of small booths available */
+            smallBoothQuota?: number;
+            /** @description Number of big booths available */
+            bigBoothQuota?: number;
+            /** @description URL of the exhibition poster picture */
+            posterPicture?: string;
+        };
+        ExhibitionResponse: {
             /** @description Auto-generated MongoDB ObjectId */
-            readonly _id?: string;
+            readonly _id: string;
             /** @description Name of the exhibition */
             name: string;
             /** @description Detailed description of the exhibition */
@@ -897,12 +933,16 @@ export interface components {
              * Format: date-time
              * @description Auto-generated timestamp of creation
              */
-            readonly createdAt?: string;
+            readonly createdAt: string;
             /**
              * Format: date-time
              * @description Auto-generated timestamp of last update
              */
-            readonly updatedAt?: string;
+            readonly updatedAt: string;
+        };
+        PopulatedExhibitionResponse: components["schemas"]["ExhibitionResponse"] & {
+            /** @description List of bookings associated with this exhibition */
+            bookings: components["schemas"]["BookingResponse"][];
         };
     };
     responses: never;

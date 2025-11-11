@@ -1,11 +1,19 @@
 # SW Dev Prac 2 (Frontend) Final Project
 
-🎪 Exhibition Booth Booking Frontend
+🎪 P05: Exhibition Booth Booking Frontend
+
+## Backend Setup
+
+Use backend from forked version `git clone https://github.com/leomotors/p05-ExhibitionBooth.git` which updated the openapi (swagger) schema to better reflect the actual API behavior.
+
+The forked version also come with Scalar UI at http://localhost:5003/scalar
+
+## Instructions
 
 พัฒนา **Frontend** สำหรับระบบ **Exhibition Booth Booking**  
 ให้มีการทำงานดังต่อไปนี้
 
-## 🧑‍💼 User Management
+### 🧑‍💼 User Management
 
 - รองรับผู้ใช้ 2 **role** ได้แก่
 
@@ -28,7 +36,7 @@
 - **Note:**  
   API มีการทำ **access control** และ **protected route** ด้วย **middleware**
 
-## 🏛️ Exhibition Management
+### 🏛️ Exhibition Management
 
 - ผู้ใช้ทุกคนสามารถ **ดูข้อมูล Exhibition** ได้
 
@@ -42,7 +50,7 @@
 - ในการสร้าง Exhibition:
   - **วันที่เริ่มต้น (start date)** ต้อง **ไม่เป็นวันก่อนหน้าวันปัจจุบัน**
 
-## 🏠 Booth Booking Management
+### 🏠 Booth Booking Management
 
 - หลังเข้าสู่ระบบ (`login`):
 
@@ -61,7 +69,3 @@
 
   - Admin สามารถ
     - `view` / `edit` / `delete` booking ของ **user ใดก็ได้**
-
-## 🔗 Backend API
-
-[https://github.com/machi-cu-68-1/p05-ExhibitionBooth.git](https://github.com/machi-cu-68-1/p05-ExhibitionBooth.git)
