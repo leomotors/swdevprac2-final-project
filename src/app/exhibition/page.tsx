@@ -14,12 +14,15 @@ const boothLayouts: Record<
     { x: 50, y: 100, width: 100, height: 100, label: "A1" },
     { x: 200, y: 100, width: 200, height: 100, label: "A2" },
     { x: 450, y: 100, width: 100, height: 100, label: "A3" },
+    { x: 50, y: 250, width: 200, height: 150, label: "A4" },
+    { x: 300, y: 250, width: 200, height: 150, label: "A5" },
   ],
   B: [
     { x: 50, y: 50, width: 150, height: 150, label: "B1" },
     { x: 250, y: 50, width: 100, height: 100, label: "B2" },
     { x: 400, y: 50, width: 200, height: 150, label: "B3" },
     { x: 50, y: 250, width: 100, height: 100, label: "B4" },
+    { x: 250, y: 250, width: 200, height: 150, label: "B5" },
   ],
   C: [
     { x: 100, y: 100, width: 120, height: 120, label: "C1" },
@@ -38,6 +41,12 @@ export default function ExhibitionCreatePage() {
   const [description, setDescription] = useState("");
   const [capacity, setCapacity] = useState<number | "">("");
   const [message, setMessage] = useState<string | null>(null);
+  const [transform, setTransform] = useState({
+    scale: 1,
+    translateX: 0,
+    translateY: 0,
+  });
+  const svgRef = React.useRef<SVGSVGElement>(null);
 
   const pastelColors = ["#FFDEE9", "#B5EAEA", "#FFCBCB", "#F3FFE3", "#E4C1F9"];
 
@@ -71,6 +80,41 @@ export default function ExhibitionCreatePage() {
     setMessage("Exhibition submitted (preview). Check console for payload.");
   }
 
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const scaleChange = e.ctrlKey ? (e.deltaY < 0 ? 0.1 : -0.1) : 0;
+    setTransform((prev) => {
+      const newScale = Math.min(Math.max(prev.scale + scaleChange, 0.5), 2);
+      return { ...prev, scale: newScale };
+    });
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!svgRef.current) return;
+
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const { translateX, translateY } = transform;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const dx = moveEvent.clientX - startX;
+      const dy = moveEvent.clientY - startY;
+      setTransform((prev) => ({
+        ...prev,
+        translateX: translateX + dx,
+        translateY: translateY + dy,
+      }));
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
   return (
     <div
       className={`min-h-screen p-8 font-['Comic_Sans_MS',_'Inter',ui-sans-serif,system-ui,-apple-system,'Segoe_UI',Roboto,'Helvetica_Neue',Arial] bg-gradient-to-b from-[#FFDEE9] via-[#B5EAEA] to-[#FFCBCB]`}
@@ -84,22 +128,35 @@ export default function ExhibitionCreatePage() {
         </header>
 
         <section className="mb-8 grid gap-4">
-          <div>
-            <label className="font-bold text-[#FF69B4]">Select Hall: </label>
-            <select
-              value={hall}
-              onChange={(e) => setHall(e.target.value as Hall)}
-              // UPDATED: Added focus styles to match inputs
-              className="p-2 rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] text-[#6b7280] focus:outline-none focus:ring focus:ring-pink-500"
-            >
-              <option value="A">Hall A</option>
-              <option value="B">Hall B</option>
-              <option value="C">Hall C</option>
-            </select>
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <label className="font-bold text-[#FF69B4]">Select Hall: </label>
+              <select
+                value={hall}
+                onChange={(e) => setHall(e.target.value as Hall)}
+                className="p-2 rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] text-[#6b7280] focus:outline-none focus:ring focus:ring-pink-500"
+              >
+                <option value="A">Hall A</option>
+                <option value="B">Hall B</option>
+                <option value="C">Hall C</option>
+              </select>
+            </div>
           </div>
 
-          <div className="w-full h-[400px] rounded-xl overflow-hidden relative border-2 border-dashed border-[#FFCBCB] bg-[#FFF0F5]">
-            <svg viewBox="0 0 700 500" className="w-full h-full">
+          <div
+            className="w-full h-[400px] rounded-xl overflow-hidden relative border-2 border-dashed border-[#FFCBCB] bg-[#FFF0F5]"
+            onWheel={handleWheel}
+            onMouseDown={handleMouseDown}
+          >
+            <svg
+              ref={svgRef}
+              viewBox="0 0 700 500"
+              className="w-full h-full"
+              style={{
+                transform: `translate(${transform.translateX}px, ${transform.translateY}px) scale(${transform.scale})`,
+                transformOrigin: "center",
+              }}
+            >
               <rect x={0} y={0} width={700} height={500} fill="#FFF0F5" />
 
               {boothLayouts[hall].map((booth, index) => (
@@ -115,7 +172,6 @@ export default function ExhibitionCreatePage() {
                     stroke="#FF69B4"
                     strokeWidth={2}
                   />
-                  {/* Using the default SVG font settings here */}
                   <text
                     x={booth.x + 10}
                     y={booth.y + 30}
