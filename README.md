@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SW Dev Prac 2 (Frontend) Final Project
 
-## Getting Started
+🎪 Exhibition Booth Booking Frontend
 
-First, run the development server:
+พัฒนา **Frontend** สำหรับระบบ **Exhibition Booth Booking**  
+ให้มีการทำงานดังต่อไปนี้
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🧑‍💼 User Management
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- รองรับผู้ใช้ 2 **role** ได้แก่
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+  - `admin`
+  - `member`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- ผู้ใช้สามารถ **ลงทะเบียน (register)** โดยระบุข้อมูล:
 
-## Learn More
+  - `name`
+  - `email`
+  - `tel`
+  - `role`
+  - `password`
 
-To learn more about Next.js, take a look at the following resources:
+- หลังการลงทะเบียน ผู้ใช้สามารถ **เข้าสู่ระบบ (login)** ด้วย `email` และ `password`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+  - ระบบจะออก **JWT token** เป็น user credential หลังการเข้าสู่ระบบ
+  - ผู้ใช้สามารถ **ออกจากระบบ (logout)** ได้
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Note:**  
+  API มีการทำ **access control** และ **protected route** ด้วย **middleware**
 
-## Deploy on Vercel
+## 🏛️ Exhibition Management
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- ผู้ใช้ทุกคนสามารถ **ดูข้อมูล Exhibition** ได้
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- หลังเข้าสู่ระบบ (`login`):
+
+  - ผู้ใช้ที่มี role เป็น **admin** สามารถ
+    - `add` / `update` / `delete` / `view` ข้อมูล Exhibition ได้
+  - Exhibition ที่สร้างใหม่จะได้รับ **id สำหรับอ้างอิง**  
+    เพื่อใช้ในการ update/delete และจัดการ Booth Booking ที่เกี่ยวข้อง
+
+- ในการสร้าง Exhibition:
+  - **วันที่เริ่มต้น (start date)** ต้อง **ไม่เป็นวันก่อนหน้าวันปัจจุบัน**
+
+## 🏠 Booth Booking Management
+
+- หลังเข้าสู่ระบบ (`login`):
+
+  - ผู้ใช้ที่มี role เป็น **member** สามารถ
+
+    - **สร้าง Booth Booking** สำหรับ Exhibition ใดก็ได้
+      - Booth Booking ที่สร้างใหม่จะได้รับ **id สำหรับอ้างอิง**
+      - ต้องระบุ **id ของ exhibition**
+
+  - Member สามารถสร้าง **หลาย booking ต่อ exhibition** ได้  
+    แต่จอง booth รวมกัน (ทั้ง `big` และ `small`) ได้สูงสุด **6 booth ต่อ exhibition**
+
+  - Member สามารถ
+
+    - `view` / `edit` / `delete` booking ของตนเองได้
+
+  - Admin สามารถ
+    - `view` / `edit` / `delete` booking ของ **user ใดก็ได้**
+
+## 🔗 Backend API
+
+[https://github.com/machi-cu-68-1/p05-ExhibitionBooth.git](https://github.com/machi-cu-68-1/p05-ExhibitionBooth.git)
