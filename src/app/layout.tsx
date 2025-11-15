@@ -5,8 +5,8 @@ import type { Metadata } from "next";
 import Navbar from "./components/Navbar";
 
 export const metadata: Metadata = {
-  title: "Yuri Con Exhibition Booth Booking",
-  description: "Book your booth for the exhibition held by Yuri Con!",
+  title: "Yuri Exhibition Booth Booking",
+  description: "Book your booth for the exhibition held by Yuri Lover Group!",
 };
 
 export default function RootLayout({

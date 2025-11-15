@@ -1,8 +1,10 @@
 import Link from "next/link";
 
+import { LandingCarousel } from "@/components/LandingCarousel";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center gap-12 p-8 pt-16">
+    <main className="flex min-h-screen flex-col items-center gap-12 p-8 py-16">
       {/* Hero Section */}
       <div className="flex max-w-4xl flex-col items-center gap-6 text-center">
         <h1 className="bg-linear-to-r from-pink-500 to-purple-600 bg-clip-text text-6xl font-bold text-transparent">
@@ -29,9 +31,11 @@ export default function Home() {
           </p>
           <p>
             Our conferences, from the historic 1st Yuri Conference to the
-            upcoming 67th edition and more to come, have become the cornerstone
-            events where artists showcase their masterpieces, merchants present
-            exclusive merchandise, and fans discover new treasures.
+            upcoming <span className="oscillate-1">6</span>
+            <span className="oscillate-2">7</span>th edition and more to come,
+            have become the cornerstone events where artists showcase their
+            masterpieces, merchants present exclusive merchandise, and fans
+            discover new treasures.
           </p>
           <p>
             Whether you're a veteran exhibitor or a first-time attendee, our
@@ -75,7 +79,7 @@ export default function Home() {
       </div>
 
       {/* CTA Section */}
-      <div className="mt-12 mb-16 flex flex-col items-center gap-6">
+      <div className="my-12 flex flex-col items-center gap-6">
         <h2 className="text-3xl font-bold text-gray-800">Ready to Join?</h2>
         <p className="max-w-2xl text-center text-lg text-gray-600">
           Book your booth today and be part of the most exciting yuri exhibition
@@ -88,6 +92,9 @@ export default function Home() {
           View All Exhibitions →
         </Link>
       </div>
+
+      {/* Image Carousel */}
+      <LandingCarousel />
     </main>
   );
 }
