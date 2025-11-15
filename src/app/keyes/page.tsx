@@ -12,7 +12,7 @@ export default async function KeyesPage() {
   }
 
   return (
-    <ul className="pl-5 list-disc">
+    <ul className="list-disc pl-5">
       {data.data.map((exhibition) => (
         <li key={exhibition._id}>
           {exhibition.name} {exhibition.description}

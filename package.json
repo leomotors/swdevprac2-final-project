@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "format": "eslint --fix",
     "codegen": "pnpm openapi-typescript http://localhost:5003/openapi.json -o ./src/libs/api/schema.d.ts"
   },
   "dependencies": {
@@ -16,6 +17,7 @@
     "react-dom": "19.2.0"
   },
   "devDependencies": {
+    "@leomotors/config": "^1.0.1",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/node": "^24.10.0",
     "@types/react": "^19",
@@ -23,6 +25,8 @@
     "eslint": "^9.39.1",
     "eslint-config-next": "16.0.1",
     "openapi-typescript": "^7.10.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.7.1",
     "tailwindcss": "^4.1.17",
     "typescript": "^5"
   }

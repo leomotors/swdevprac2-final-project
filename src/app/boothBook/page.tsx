@@ -137,142 +137,138 @@ export default function BoothBookingPage() {
   };
 
   return (
-    <div
-      className={`min-h-screen p-8 font-['Comic_Sans_MS',_'Inter',ui-sans-serif,system-ui,-apple-system,'Segoe_UI',Roboto,'Helvetica_Neue',Arial] bg-gradient-to-b from-[#FFDEE9] via-[#B5EAEA] to-[#FFCBCB]`}
-    >
-      <div className="max-w-[900px] mx-auto bg-white rounded-xl shadow-xl p-6 border border-[#FFDEE9]">
-        <header className="text-center mb-6">
-          <h1 className="text-3xl text-[#FF69B4]">Book your Booth</h1>
-          <p className="text-gray-500">
-            Design your booth layout with a pastel touch!
-          </p>
-        </header>
+    <main className="mx-auto max-w-[900px] rounded-xl border border-[#FFDEE9] bg-white p-6 shadow-xl">
+      <header className="mb-6 text-center">
+        <h1 className="text-3xl text-[#FF69B4]">Book your Booth</h1>
+        <p className="text-gray-500">
+          Design your booth layout with a pastel touch!
+        </p>
+      </header>
 
-        <section className="mb-8 grid gap-4">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <label className="font-bold text-[#FF69B4]">
-                Select Exhibition:{" "}
-              </label>
-              <select
-                value={selectedExhibition.id}
-                onChange={(e) => {
-                  const exhibition = exhibitions.find(
-                    (ex) => ex.id === e.target.value
-                  );
-                  if (exhibition) {
-                    setSelectedExhibition(exhibition);
-                    setHall(exhibition.hall as Hall);
-                    setSelectedBooth(null);
-                  }
-                }}
-                className="p-2 rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] text-[#6b7280] focus:outline-none focus:ring focus:ring-pink-500"
-              >
-                {exhibitions.map((exhibition) => (
-                  <option key={exhibition.id} value={exhibition.id}>
-                    {exhibition.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="mb-4 p-4 bg-[#FFF0F5] rounded-lg border border-[#FFCBCB]">
-            <h2 className="text-2xl font-bold text-[#FF69B4] mb-2">
-              {selectedExhibition.name}
-            </h2>
-            <p className="text-[#6b7280] mb-1">
-              <strong>Hall:</strong> {selectedExhibition.hall}
-            </p>
-            <p className="text-[#6b7280] mb-1">
-              <strong>Date:</strong> November 20, 2025 - November 25, 2025
-            </p>
-            <p className="text-[#6b7280]">
-              <strong>Description:</strong> This is a mock description for{" "}
-              {selectedExhibition.name}.
-            </p>
-          </div>
-
-          <div
-            className="w-full h-[400px] rounded-xl overflow-hidden relative border-2 border-dashed border-[#FFCBCB] bg-[#FFF0F5]"
-            onWheel={handleWheel}
-            onMouseDown={handleMouseDown}
-          >
-            <svg
-              ref={svgRef}
-              viewBox="0 0 700 500"
-              className="w-full h-full"
-              style={{
-                transform: `translate(${transform.translateX}px, ${transform.translateY}px) scale(${transform.scale})`,
-                transformOrigin: "center",
+      <section className="mb-8 grid gap-4">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <label className="font-bold text-[#FF69B4]">
+              Select Exhibition:{" "}
+            </label>
+            <select
+              value={selectedExhibition.id}
+              onChange={(e) => {
+                const exhibition = exhibitions.find(
+                  (ex) => ex.id === e.target.value,
+                );
+                if (exhibition) {
+                  setSelectedExhibition(exhibition);
+                  setHall(exhibition.hall as Hall);
+                  setSelectedBooth(null);
+                }
               }}
+              className="rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] p-2 text-[#6b7280] focus:ring focus:ring-pink-500 focus:outline-none"
             >
-              <rect x={0} y={0} width={700} height={500} fill="#FFF0F5" />
-
-              {boothLayouts[hall].map((booth, index) => (
-                <g
-                  key={booth.label}
-                  onClick={() => handleBoothClick(booth.label)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <rect
-                    x={booth.x}
-                    y={booth.y}
-                    width={booth.width}
-                    height={booth.height}
-                    rx={8}
-                    ry={8}
-                    fill={
-                      selectedBooth === booth.label
-                        ? "#FF69B4"
-                        : pastelColors[index % pastelColors.length]
-                    }
-                    stroke="#FF69B4"
-                    strokeWidth={2}
-                  />
-                  <text
-                    x={booth.x + 10}
-                    y={booth.y + 30}
-                    fontSize={14}
-                    fill="#6b7280"
-                    fontWeight={600}
-                  >
-                    {booth.label}
-                  </text>
-                </g>
+              {exhibitions.map((exhibition) => (
+                <option key={exhibition.id} value={exhibition.id}>
+                  {exhibition.name}
+                </option>
               ))}
-            </svg>
+            </select>
           </div>
-        </section>
+        </div>
 
-        <section>
-          <form
-            onSubmit={handleBookingSubmit}
-            className="grid gap-4 text-[#6b7280]"
+        <div className="mb-4 rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] p-4">
+          <h2 className="mb-2 text-2xl font-bold text-[#FF69B4]">
+            {selectedExhibition.name}
+          </h2>
+          <p className="mb-1 text-[#6b7280]">
+            <strong>Hall:</strong> {selectedExhibition.hall}
+          </p>
+          <p className="mb-1 text-[#6b7280]">
+            <strong>Date:</strong> November 20, 2025 - November 25, 2025
+          </p>
+          <p className="text-[#6b7280]">
+            <strong>Description:</strong> This is a mock description for{" "}
+            {selectedExhibition.name}.
+          </p>
+        </div>
+
+        <div
+          className="relative h-[400px] w-full overflow-hidden rounded-xl border-2 border-dashed border-[#FFCBCB] bg-[#FFF0F5]"
+          onWheel={handleWheel}
+          onMouseDown={handleMouseDown}
+        >
+          <svg
+            ref={svgRef}
+            viewBox="0 0 700 500"
+            className="h-full w-full"
+            style={{
+              transform: `translate(${transform.translateX}px, ${transform.translateY}px) scale(${transform.scale})`,
+              transformOrigin: "center",
+            }}
           >
-            <div>
-              <label className="block font-bold text-[#FF69B4]">
-                Selected Booth (click the booth to select)
-              </label>
-              <input
-                value={selectedBooth || ""}
-                readOnly
-                placeholder="Click on a booth to select"
-                className="w-full p-2.5 rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] focus:outline-none focus:ring focus:ring-pink-500"
-              />
-            </div>
+            <rect x={0} y={0} width={700} height={500} fill="#FFF0F5" />
 
-            <div className="flex gap-3 items-center">
-              <button
-                type="submit"
-                className="px-4 py-2.5 bg-[#FF69B4] text-white border-none rounded-lg shadow-pink-400/50 shadow-lg"
+            {boothLayouts[hall].map((booth, index) => (
+              <g
+                key={booth.label}
+                onClick={() => handleBoothClick(booth.label)}
+                style={{ cursor: "pointer" }}
               >
-                Book Booth
-              </button>
-            </div>
-          </form>
-        </section>
-      </div>
-    </div>
+                <rect
+                  x={booth.x}
+                  y={booth.y}
+                  width={booth.width}
+                  height={booth.height}
+                  rx={8}
+                  ry={8}
+                  fill={
+                    selectedBooth === booth.label
+                      ? "#FF69B4"
+                      : pastelColors[index % pastelColors.length]
+                  }
+                  stroke="#FF69B4"
+                  strokeWidth={2}
+                />
+                <text
+                  x={booth.x + 10}
+                  y={booth.y + 30}
+                  fontSize={14}
+                  fill="#6b7280"
+                  fontWeight={600}
+                >
+                  {booth.label}
+                </text>
+              </g>
+            ))}
+          </svg>
+        </div>
+      </section>
+
+      <section>
+        <form
+          onSubmit={handleBookingSubmit}
+          className="grid gap-4 text-[#6b7280]"
+        >
+          <div>
+            <label className="block font-bold text-[#FF69B4]">
+              Selected Booth (click the booth to select)
+            </label>
+            <input
+              value={selectedBooth || ""}
+              readOnly
+              placeholder="Click on a booth to select"
+              className="w-full rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] p-2.5 focus:ring focus:ring-pink-500 focus:outline-none"
+            />
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="submit"
+              className="rounded-lg border-none bg-[#FF69B4] px-4 py-2.5 text-white shadow-lg shadow-pink-400/50"
+            >
+              Book Booth
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
   );
 }
