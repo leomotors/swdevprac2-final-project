@@ -543,9 +543,9 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            count?: number;
-                            data?: components["schemas"]["PopulatedExhibitionResponse"][];
+                            success: boolean;
+                            count: number;
+                            data: components["schemas"]["PopulatedExhibitionResponse"][];
                         };
                     };
                 };
@@ -583,8 +583,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            data?: components["schemas"]["ExhibitionResponse"];
+                            success: boolean;
+                            data: components["schemas"]["ExhibitionResponse"];
                         };
                     };
                 };
@@ -647,8 +647,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            data?: components["schemas"]["PopulatedExhibitionResponse"];
+                            success: boolean;
+                            data: components["schemas"]["PopulatedExhibitionResponse"];
                         };
                     };
                 };
@@ -688,8 +688,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            data?: components["schemas"]["ExhibitionResponse"];
+                            success: boolean;
+                            data: components["schemas"]["ExhibitionResponse"];
                         };
                     };
                 };
