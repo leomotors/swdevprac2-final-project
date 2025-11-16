@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import NavbarActions from "./NavbarActions";
+
 export default function Navbar() {
   return (
     <nav className="sticky top-4 z-50 mx-auto max-w-3xl">
@@ -17,15 +19,8 @@ export default function Navbar() {
           >
             Exhibitions
           </Link>
-          <Link
-            href="/boothBook"
-            className="text-gray-700 transition-colors hover:text-pink-600"
-          >
-            Book Booth
-          </Link>
-          <button className="ml-4 rounded-full bg-pink-600 px-4 py-2 font-medium text-white transition-colors hover:bg-pink-700">
-            Login
-          </button>
+
+          <NavbarActions />
         </div>
       </div>
     </nav>

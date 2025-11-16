@@ -2,6 +2,8 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 
+import { AuthProvider } from "@/contexts/AuthContext";
+
 import Navbar from "./components/Navbar";
 
 export const metadata: Metadata = {
@@ -17,8 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-linear-to-b from-[#FFDEE9] via-[#B5EAEA] to-[#FFCBCB] antialiased">
-        <Navbar />
-        {children}
+        <AuthProvider>
+          <Navbar />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
