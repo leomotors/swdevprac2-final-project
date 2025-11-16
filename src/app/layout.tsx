@@ -2,9 +2,8 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 
+import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/contexts/AuthContext";
-
-import Navbar from "./components/Navbar";
 
 export const metadata: Metadata = {
   title: "Yuri Exhibition Booth Booking",
