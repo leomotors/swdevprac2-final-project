@@ -14,7 +14,7 @@ export default function Navbar() {
             Yuri Conference
           </Link>
           <Link
-            href="/exhibition"
+            href="/exhibitions"
             className="text-gray-700 transition-colors hover:text-pink-600"
           >
             Exhibitions
