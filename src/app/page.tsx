@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { LandingCarousel } from "@/components/LandingCarousel";
+import { Testimonials } from "@/components/Testimonials";
 
 export default function Home() {
   return (
@@ -48,7 +49,7 @@ export default function Home() {
 
       {/* Features Grid */}
       <div className="mt-8 grid w-full max-w-5xl gap-8 md:grid-cols-3">
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-lg transition-shadow hover:shadow-xl">
+        <div className="rounded-2xl border border-gray-100 bg-white/40 p-6 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl">
           <div className="mb-4 text-4xl">🎨</div>
           <h3 className="mb-3 text-xl font-bold text-gray-800">For Artists</h3>
           <p className="text-gray-600">
@@ -57,7 +58,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-lg transition-shadow hover:shadow-xl">
+        <div className="rounded-2xl border border-gray-100 bg-white/40 p-6 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl">
           <div className="mb-4 text-4xl">🛍️</div>
           <h3 className="mb-3 text-xl font-bold text-gray-800">
             For Collectors
@@ -68,7 +69,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-lg transition-shadow hover:shadow-xl">
+        <div className="rounded-2xl border border-gray-100 bg-white/40 p-6 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl">
           <div className="mb-4 text-4xl">🤝</div>
           <h3 className="mb-3 text-xl font-bold text-gray-800">For Everyone</h3>
           <p className="text-gray-600">
@@ -76,6 +77,14 @@ export default function Home() {
             friends, and celebrate the culture together!
           </p>
         </div>
+      </div>
+
+      {/* Image Carousel */}
+      <LandingCarousel />
+
+      {/* Testimonials Section */}
+      <div className="my-12 flex w-full justify-center">
+        <Testimonials />
       </div>
 
       {/* CTA Section */}
@@ -92,9 +101,6 @@ export default function Home() {
           View All Exhibitions →
         </Link>
       </div>
-
-      {/* Image Carousel */}
-      <LandingCarousel />
     </main>
   );
 }

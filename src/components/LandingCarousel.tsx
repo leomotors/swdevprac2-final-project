@@ -12,11 +12,11 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-const images = [
-  "/carousel/yuri-1.webp",
-  "/carousel/yuri-2.avif",
-  "/carousel/yuri-3.webp",
-];
+import yuri1 from "./assets/carousel/yuri-1.webp";
+import yuri2 from "./assets/carousel/yuri-2.webp";
+import yuri3 from "./assets/carousel/yuri-3.webp";
+
+const images = [yuri1, yuri2, yuri3];
 
 export function LandingCarousel() {
   const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: true }));
