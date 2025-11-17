@@ -1,41 +1,32 @@
 "use client";
-
 import React, { useState } from "react";
-
-type Hall = "A" | "B" | "C";
-
-const booths = [] as const;
-
-const boothLayouts: Record<
-  Hall,
-  { x: number; y: number; width: number; height: number; label: string }[]
-> = {
-  A: [
-    { x: 50, y: 100, width: 100, height: 100, label: "A1" },
-    { x: 200, y: 100, width: 200, height: 100, label: "A2" },
-    { x: 450, y: 100, width: 100, height: 100, label: "A3" },
-    { x: 50, y: 250, width: 200, height: 150, label: "A4" },
-    { x: 300, y: 250, width: 200, height: 150, label: "A5" },
-  ],
-  B: [
-    { x: 50, y: 50, width: 150, height: 150, label: "B1" },
-    { x: 250, y: 50, width: 100, height: 100, label: "B2" },
-    { x: 400, y: 50, width: 200, height: 150, label: "B3" },
-    { x: 50, y: 250, width: 100, height: 100, label: "B4" },
-    { x: 250, y: 250, width: 200, height: 150, label: "B5" },
-  ],
-  C: [
-    { x: 100, y: 100, width: 120, height: 120, label: "C1" },
-    { x: 300, y: 100, width: 150, height: 120, label: "C2" },
-    { x: 500, y: 100, width: 100, height: 100, label: "C3" },
-    { x: 200, y: 250, width: 200, height: 150, label: "C4" },
-    { x: 450, y: 250, width: 150, height: 150, label: "C5" },
-  ],
-};
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ExhibitionCreatePage() {
-  // Fields required by backend:
-  // name, description, venue, startDate (ISO string), durationDay (number), smallBoothQuota, bigBoothQuota, posterPicture
+  const { user, isLoading, isAuthenticated } = useAuth();
+
+  // Only allow admin
+  if (isLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center">
+        <div className="text-xl text-gray-500">Loading...</div>
+      </main>
+    );
+  }
+  if (!isAuthenticated || user?.role !== "admin") {
+    return (
+      <main className="flex min-h-screen items-center justify-center">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-8 text-center">
+          <h1 className="mb-2 text-3xl font-bold text-red-600">Forbidden</h1>
+          <p className="text-lg text-gray-700">
+            You must be an admin to access this page.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  // ...existing code...
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [venue, setVenue] = useState("");
@@ -114,8 +105,6 @@ export default function ExhibitionCreatePage() {
     }
   }
 
-  // (SVG pan/zoom removed for this form page)
-
   return (
     <main className="mx-auto max-w-[900px] rounded-xl border border-[#FFDEE9] bg-white p-6 shadow-xl">
       <header className="mb-6 text-center">
@@ -127,15 +116,6 @@ export default function ExhibitionCreatePage() {
 
       <section>
         <form onSubmit={handleSubmit} className="grid gap-4 text-[#6b7280]">
-          <div>
-            <label className="block font-bold text-[#FF69B4]">Venue</label>
-            <input
-              value={venue}
-              onChange={(e) => setVenue(e.target.value)}
-              placeholder="Exhibition venue"
-              className="rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] p-2 text-[#6b7280] focus:ring focus:ring-pink-500 focus:outline-none"
-            />
-          </div>
           <div>
             <label className="block font-bold text-[#FF69B4]">Name</label>
             <input

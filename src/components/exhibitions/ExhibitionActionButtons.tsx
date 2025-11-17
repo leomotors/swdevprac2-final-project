@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-
 import { useAuth } from "@/contexts/AuthContext";
-
 import { Button } from "../ui/button";
 
 interface ExhibitionActionButtonsProps {
@@ -50,9 +48,14 @@ export function ExhibitionActionButtons({
   }
 
   // Regular member user
+  // --- MODIFICATION HERE ---
+  // Wrap the Button in a Link that passes the exhibitionId
+  // as a query param.
   return (
-    <Button className="w-full bg-linear-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">
-      Book this Exhibition
-    </Button>
+    <Link href={`/boothBook?exhibition=${exhibitionId}`}>
+      <Button className="w-full bg-linear-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">
+        Book this Exhibition
+      </Button>
+    </Link>
   );
 }

@@ -1,5 +1,4 @@
 import Link from "next/link";
-
 import NavbarActions from "./NavbarActions";
 
 export default function Navbar() {
@@ -18,13 +17,6 @@ export default function Navbar() {
             className="text-gray-700 transition-colors hover:text-pink-600"
           >
             Exhibitions
-          </Link>
-
-          <Link
-            href="/exhibitionCreating"
-            className="text-gray-700 transition-colors hover:text-pink-600"
-          >
-            ExhibitionCreating
           </Link>
 
           <NavbarActions />

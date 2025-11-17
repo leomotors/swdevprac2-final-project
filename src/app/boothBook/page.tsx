@@ -1,274 +1,328 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
-type Hall = "A" | "B" | "C";
+function BoothBookForm() {
+  const { user, isLoading, isAuthenticated } = useAuth();
+  const searchParams = useSearchParams();
 
-const booths = [] as const;
-
-const boothLayouts: Record<
-  Hall,
-  { x: number; y: number; width: number; height: number; label: string }[]
-> = {
-  A: [
-    { x: 50, y: 100, width: 100, height: 100, label: "A1" },
-    { x: 200, y: 100, width: 200, height: 100, label: "A2" },
-    { x: 450, y: 100, width: 100, height: 100, label: "A3" },
-    { x: 50, y: 250, width: 200, height: 150, label: "A4" },
-    { x: 300, y: 250, width: 200, height: 150, label: "A5" },
-  ],
-  B: [
-    { x: 50, y: 50, width: 150, height: 150, label: "B1" },
-    { x: 250, y: 50, width: 100, height: 100, label: "B2" },
-    { x: 400, y: 50, width: 200, height: 150, label: "B3" },
-    { x: 50, y: 250, width: 100, height: 100, label: "B4" },
-    { x: 250, y: 250, width: 200, height: 150, label: "B5" },
-  ],
-  C: [
-    { x: 100, y: 100, width: 120, height: 120, label: "C1" },
-    { x: 300, y: 100, width: 150, height: 120, label: "C2" },
-    { x: 500, y: 100, width: 100, height: 100, label: "C3" },
-    { x: 200, y: 250, width: 200, height: 150, label: "C4" },
-    { x: 450, y: 250, width: 150, height: 150, label: "C5" },
-  ],
-};
-
-export default function BoothBookingPage() {
-  const [hall, setHall] = useState<Hall>("A");
-  const [title, setTitle] = useState("");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
-  const [description, setDescription] = useState("");
-  const [capacity, setCapacity] = useState<number | "">("");
+  const [exhibitions, setExhibitions] = useState<any[]>([]);
+  const [selectedExhibition, setSelectedExhibition] = useState<string>("");
+  const [boothType, setBoothType] = useState<string>("small");
+  const [amount, setAmount] = useState<number>(1);
   const [message, setMessage] = useState<string | null>(null);
-  const [transform, setTransform] = useState({
-    scale: 1,
-    translateX: 0,
-    translateY: 0,
-  });
-  const svgRef = React.useRef<SVGSVGElement>(null);
-  const [selectedBooth, setSelectedBooth] = useState<string | null>(null);
-  const exhibitions = [
-    { id: "ex1", name: "Exhibition 1", hall: "A" },
-    { id: "ex2", name: "Exhibition 2", hall: "B" },
-    { id: "ex3", name: "Exhibition 3", hall: "C" },
-  ];
-  const [selectedExhibition, setSelectedExhibition] = useState(exhibitions[0]);
+  const [loading, setLoading] = useState(false);
 
-  const pastelColors = ["#FFDEE9", "#B5EAEA", "#FFCBCB", "#F3FFE3", "#E4C1F9"];
+  useEffect(() => {
+    async function fetchExhibitionsAndSetDefault() {
+      try {
+        const res = await fetch("http://localhost:5003/api/v1/exhibitions");
+        const json = await res.json();
+        let bookableExhibitions: any[] = [];
 
-  function handleSubmit(e: React.FormEvent) {
+        if (json.success && Array.isArray(json.data)) {
+          bookableExhibitions = json.data.filter((ex: any) => {
+            const exStartDate = new Date(ex.startDate);
+            const today = new Date();
+            exStartDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            return exStartDate >= today;
+          });
+
+          setExhibitions(bookableExhibitions);
+        }
+
+        const exhibitionFromQuery = searchParams.get("exhibition");
+
+        if (exhibitionFromQuery) {
+          console.log("Exhibition from query:", exhibitionFromQuery);
+          const exhibitionExists = bookableExhibitions.some(
+            (ex: any) => ex._id === exhibitionFromQuery,
+          );
+
+          if (exhibitionExists) {
+            setSelectedExhibition(exhibitionFromQuery);
+          }
+        }
+      } catch (err) {
+        setMessage("Failed to load exhibitions.");
+      }
+    }
+
+    fetchExhibitionsAndSetDefault();
+  }, [searchParams]);
+
+  if (isLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center">
+        <div className="text-xl text-gray-500">Loading...</div>
+      </main>
+    );
+  }
+
+  if (!isAuthenticated || user?.role !== "member") {
+    return (
+      <main className="flex min-h-screen items-center justify-center">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-8 text-center">
+          <h1 className="mb-2 text-3xl font-bold text-red-600">Forbidden</h1>
+          <p className="text-lg text-gray-700">
+            You must be a member to book a booth.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
+    setLoading(true);
 
-    if (!title.trim()) {
-      setMessage("Please provide a title.");
+    if (!selectedExhibition) {
+      setMessage("Please select an exhibition.");
+      setLoading(false);
       return;
     }
-    if (!dateFrom || !dateTo) {
-      setMessage("Please provide both start and end dates.");
+    if (!["small", "big"].includes(boothType)) {
+      setMessage("Booth type must be small or big.");
+      setLoading(false);
       return;
     }
-    if (dateFrom > dateTo) {
-      setMessage("Start date must be before or equal to end date.");
+    if (amount < 1) {
+      setMessage("Amount must be at least 1.");
+      setLoading(false);
+      return;
+    }
+
+    const token =
+      typeof window !== "undefined"
+        ? localStorage.getItem("accessToken")
+        : null;
+    if (!token) {
+      setMessage("You must be logged in to book a booth.");
+      setLoading(false);
       return;
     }
 
     const payload = {
-      title,
-      hall,
-      date_from: dateFrom,
-      date_to: dateTo,
-      description,
-      capacity: capacity === "" ? null : capacity,
+      exhibition: selectedExhibition,
+      boothType,
+      amount,
     };
 
-    console.log("Submitting exhibition:", payload);
-    setMessage("Exhibition submitted (preview). Check console for payload.");
+    try {
+      const res = await fetch("http://localhost:5003/api/v1/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (res.status === 201 && json.success) {
+        setMessage("Booth booked successfully!");
+        setAmount(1);
+        // Update available booth quotas immediately
+        setExhibitions((prev) =>
+          prev.map((ex) => {
+            if (ex._id !== selectedExhibition) return ex;
+            if (boothType === "small") {
+              return { ...ex, smallBoothQuota: ex.smallBoothQuota - amount };
+            } else {
+              return { ...ex, bigBoothQuota: ex.bigBoothQuota - amount };
+            }
+          }),
+        );
+      } else {
+        setMessage(json?.message || json?.error || "Failed to book booth.");
+      }
+    } catch (err) {
+      setMessage("Request failed — see console");
+    }
+    setLoading(false);
   }
 
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const scaleChange = e.ctrlKey ? (e.deltaY < 0 ? 0.1 : -0.1) : 0;
-    setTransform((prev) => {
-      const newScale = Math.min(Math.max(prev.scale + scaleChange, 0.5), 2);
-      return { ...prev, scale: newScale };
-    });
-  };
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!svgRef.current) return;
-
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const { translateX, translateY } = transform;
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      const dx = moveEvent.clientX - startX;
-      const dy = moveEvent.clientY - startY;
-      setTransform((prev) => ({
-        ...prev,
-        translateX: translateX + dx,
-        translateY: translateY + dy,
-      }));
-    };
-
-    const handleMouseUp = () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  };
-
-  const handleBoothClick = (boothLabel: string) => {
-    setSelectedBooth(boothLabel);
-  };
-
-  const handleBookingSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedBooth) {
-      alert("Please select a booth to book.");
-      return;
-    }
-    console.log(`Booking booth ${selectedBooth} in ${selectedExhibition.name}`);
-    alert(`Booth ${selectedBooth} booked successfully!`);
-  };
-
   return (
-    <main className="mx-auto max-w-[900px] rounded-xl border border-[#FFDEE9] bg-white p-6 shadow-xl">
-      <header className="mb-6 text-center">
-        <h1 className="text-3xl text-[#FF69B4]">Book your Booth</h1>
-        <p className="text-gray-500">
-          Design your booth layout with a pastel touch!
+    <main className="flex min-h-screen flex-col items-center p-8 py-16">
+      <div className="w-full max-w-2xl">
+        <h1 className="mb-4 bg-linear-to-r from-pink-500 to-purple-600 bg-clip-text text-center text-5xl font-bold text-transparent">
+          Book a Booth
+        </h1>
+        <p className="mb-8 text-center text-xl text-gray-600">
+          Select an exhibition and booth type to book your spot
         </p>
-      </header>
 
-      <section className="mb-8 grid gap-4">
-        <div className="mb-4 flex items-center justify-between">
+        <form onSubmit={handleSubmit} className="grid gap-6 text-[#6b7280]">
           <div>
-            <label className="font-bold text-[#FF69B4]">
-              Select Exhibition:{" "}
-            </label>
+            <label className="block font-bold text-[#FF69B4]">Exhibition</label>
             <select
-              value={selectedExhibition.id}
-              onChange={(e) => {
-                const exhibition = exhibitions.find(
-                  (ex) => ex.id === e.target.value,
-                );
-                if (exhibition) {
-                  setSelectedExhibition(exhibition);
-                  setHall(exhibition.hall as Hall);
-                  setSelectedBooth(null);
-                }
-              }}
-              className="rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] p-2 text-[#6b7280] focus:ring focus:ring-pink-500 focus:outline-none"
+              value={selectedExhibition} // This will now be correctly set
+              onChange={(e) => setSelectedExhibition(e.target.value)}
+              className="w-full rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] p-2.5"
             >
-              {exhibitions.map((exhibition) => (
-                <option key={exhibition.id} value={exhibition.id}>
-                  {exhibition.name}
+              <option value="">Select exhibition</option>
+              {exhibitions.map((ex) => (
+                <option key={ex._id} value={ex._id}>
+                  {ex.name}
                 </option>
               ))}
             </select>
+            {/* Show details of selected exhibition below dropdown */}
+            {selectedExhibition &&
+              (() => {
+                const ex = exhibitions.find(
+                  (e) => e._id === selectedExhibition,
+                );
+                if (!ex) return null;
+                const startDate = new Date(ex.startDate);
+                const endDate = new Date(startDate);
+                endDate.setDate(startDate.getDate() + ex.durationDay);
+                const formatDate = (date: Date) =>
+                  date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  });
+                return (
+                  <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white/60 p-6 shadow-lg transition-all">
+                    <div className="flex flex-col gap-6 md:flex-row">
+                      {/* Poster Section */}
+                      <div className="w-full md:w-2/5 lg:w-1/3">
+                        <div className="relative aspect-9/16 w-full overflow-hidden md:h-full">
+                          <img
+                            src={ex.posterPicture}
+                            alt={ex.name}
+                            className="h-48 w-full rounded-xl border border-pink-100 object-cover shadow-md transition-transform duration-300 hover:scale-105 md:h-full"
+                          />
+                        </div>
+                      </div>
+                      {/* Content Section */}
+                      <div className="flex flex-1 flex-col">
+                        <div className="p-0">
+                          <div className="text-2xl font-bold text-gray-800 transition-colors hover:text-pink-600">
+                            {ex.name}
+                          </div>
+                          <div className="mt-2 flex flex-col gap-1 text-sm text-gray-600">
+                            <p>
+                              📍 <span className="font-medium">{ex.venue}</span>
+                            </p>
+                            <p>
+                              📅 {formatDate(startDate)} - {formatDate(endDate)}
+                            </p>
+                            <p>⏰ {ex.durationDay} days</p>
+                          </div>
+                        </div>
+                        <div className="flex-1 p-0">
+                          <p className="mb-4 line-clamp-3 text-gray-700">
+                            {ex.description}
+                          </p>
+                          <div className="mb-4 grid grid-cols-2 gap-2 text-sm">
+                            <div className="rounded-lg bg-pink-50 p-3">
+                              <p className="font-semibold text-pink-700">
+                                Small Booths
+                              </p>
+                              <p className="text-gray-600">
+                                {ex.smallBoothQuota} available
+                              </p>
+                            </div>
+                            <div className="rounded-lg bg-purple-50 p-3">
+                              <p className="font-semibold text-purple-700">
+                                Big Booths
+                              </p>
+                              <p className="text-gray-600">
+                                {ex.bigBoothQuota} available
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
           </div>
-        </div>
-
-        <div className="mb-4 rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] p-4">
-          <h2 className="mb-2 text-2xl font-bold text-[#FF69B4]">
-            {selectedExhibition.name}
-          </h2>
-          <p className="mb-1 text-[#6b7280]">
-            <strong>Hall:</strong> {selectedExhibition.hall}
-          </p>
-          <p className="mb-1 text-[#6b7280]">
-            <strong>Date:</strong> November 20, 2025 - November 25, 2025
-          </p>
-          <p className="text-[#6b7280]">
-            <strong>Description:</strong> This is a mock description for{" "}
-            {selectedExhibition.name}.
-          </p>
-        </div>
-
-        <div
-          className="relative h-[400px] w-full overflow-hidden rounded-xl border-2 border-dashed border-[#FFCBCB] bg-[#FFF0F5]"
-          onWheel={handleWheel}
-          onMouseDown={handleMouseDown}
-        >
-          <svg
-            ref={svgRef}
-            viewBox="0 0 700 500"
-            className="h-full w-full"
-            style={{
-              transform: `translate(${transform.translateX}px, ${transform.translateY}px) scale(${transform.scale})`,
-              transformOrigin: "center",
-            }}
-          >
-            <rect x={0} y={0} width={700} height={500} fill="#FFF0F5" />
-
-            {boothLayouts[hall].map((booth, index) => (
-              <g
-                key={booth.label}
-                onClick={() => handleBoothClick(booth.label)}
-                style={{ cursor: "pointer" }}
-              >
-                <rect
-                  x={booth.x}
-                  y={booth.y}
-                  width={booth.width}
-                  height={booth.height}
-                  rx={8}
-                  ry={8}
-                  fill={
-                    selectedBooth === booth.label
-                      ? "#FF69B4"
-                      : pastelColors[index % pastelColors.length]
-                  }
-                  stroke="#FF69B4"
-                  strokeWidth={2}
-                />
-                <text
-                  x={booth.x + 10}
-                  y={booth.y + 30}
-                  fontSize={14}
-                  fill="#6b7280"
-                  fontWeight={600}
+          <div className="item-center row gap-4">
+            <div>
+              <label className="mb-2 block font-bold text-[#FF69B4]">
+                Booth Type
+              </label>
+              <div className="flex gap-6">
+                <button
+                  type="button"
+                  className={`w-2/5 rounded-xl border-2 p-6 text-lg font-bold shadow-md transition-all ${
+                    boothType === "small"
+                      ? "border-pink-500 bg-pink-50 text-pink-700"
+                      : "border-gray-200 bg-white text-gray-700"
+                  }`}
+                  onClick={() => setBoothType("small")}
+                  aria-pressed={boothType === "small"}
                 >
-                  {booth.label}
-                </text>
-              </g>
-            ))}
-          </svg>
-        </div>
-      </section>
-
-      <section>
-        <form
-          onSubmit={handleBookingSubmit}
-          className="grid gap-4 text-[#6b7280]"
-        >
+                  Small Booth
+                </button>
+                <button
+                  type="button"
+                  className={`w-3/5 rounded-xl border-2 p-6 text-lg font-bold shadow-md transition-all ${
+                    boothType === "big"
+                      ? "border-purple-500 bg-purple-50 text-purple-700"
+                      : "border-gray-200 bg-white text-gray-700"
+                  }`}
+                  onClick={() => setBoothType("big")}
+                  aria-pressed={boothType === "big"}
+                >
+                  Big Booth
+                </button>
+              </div>
+            </div>
+          </div>
           <div>
-            <label className="block font-bold text-[#FF69B4]">
-              Selected Booth (click the booth to select)
-            </label>
+            <label className="block font-bold text-[#FF69B4]">Amount</label>
             <input
-              value={selectedBooth || ""}
-              readOnly
-              placeholder="Click on a booth to select"
-              className="w-full rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] p-2.5 focus:ring focus:ring-pink-500 focus:outline-none"
+              type="number"
+              min={1}
+              max={6}
+              value={amount}
+              onChange={(e) => setAmount(Number(e.target.value))}
+              className="w-full rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] p-2.5"
             />
           </div>
-
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center gap-3">
             <button
               type="submit"
-              className="rounded-lg border-none bg-[#FF69B4] px-4 py-2.5 text-white shadow-lg shadow-pink-400/50"
+              disabled={loading}
+              className="rounded-lg border-none bg-[#FF69B4] px-4 py-2.5 text-white shadow-lg shadow-pink-400/50 disabled:opacity-60"
             >
-              Book Booth
+              {loading ? "Booking..." : "Book Booth"}
             </button>
           </div>
         </form>
-      </section>
+
+        {message && (
+          <div className="mt-8 rounded-lg border border-pink-200 bg-pink-50 p-4 text-center">
+            <p className="text-pink-700">{message}</p>
+          </div>
+        )}
+      </div>
     </main>
+  );
+}
+
+// -------------------------------------------------------------------
+// This is your actual page component.
+// It wraps the form in <Suspense> so useSearchParams can be used.
+// -------------------------------------------------------------------
+export default function BoothBookPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center">
+          <div className="text-xl text-gray-500">Loading...</div>
+        </main>
+      }
+    >
+      <BoothBookForm />
+    </Suspense>
   );
 }

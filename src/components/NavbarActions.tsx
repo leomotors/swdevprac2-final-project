@@ -30,6 +30,14 @@ export default function NavbarActions() {
   if (isAuthenticated) {
     return (
       <>
+        {user?.role === "admin" && (
+          <Link
+            href="/exhibitionCreating"
+            className="text-gray-700 transition-colors hover:text-pink-600"
+          >
+            Create Exhibition
+          </Link>
+        )}
         <Link
           href="/booking"
           className="text-gray-700 transition-colors hover:text-pink-600"
