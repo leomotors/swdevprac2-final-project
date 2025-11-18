@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -73,7 +72,7 @@ export default function BookingsPage() {
             </p>
           </div>
           {user?.role === "member" && (
-            <Link href="/boothBook">
+            <Link href="/booking/create">
               <Button className="rounded-lg bg-[#FF69B4] px-6 py-3 text-white shadow-lg shadow-pink-400/50 hover:bg-pink-600">
                 Create New Booking
               </Button>
@@ -86,7 +85,7 @@ export default function BookingsPage() {
             <CardContent className="p-12 text-center">
               <p className="text-xl text-gray-500">No bookings found</p>
               {user?.role === "member" && (
-                <Link href="/boothBook">
+                <Link href="/booking/create">
                   <Button className="mt-4 bg-[#FF69B4] hover:bg-pink-600">
                     Create Your First Booking
                   </Button>

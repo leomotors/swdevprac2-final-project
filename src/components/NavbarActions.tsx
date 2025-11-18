@@ -71,7 +71,7 @@ export default function NavbarActions() {
                       My Bookings
                     </Button>
                   </Link>
-                  <Link href="/boothBook">
+                  <Link href="/booking/create">
                     <Button
                       variant="ghost"
                       className="w-full justify-start gap-2 text-gray-700 hover:bg-pink-50 hover:text-pink-700"
