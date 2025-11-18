@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import React, { Suspense, useState } from "react";
 
@@ -149,7 +150,7 @@ function BoothBookForm() {
                 if (!ex) return null;
                 const startDate = new Date(ex.startDate);
                 const endDate = new Date(startDate);
-                endDate.setDate(startDate.getDate() + ex.durationDay);
+                endDate.setDate(startDate.getDate() + ex.durationDay - 1);
                 const formatDate = (date: Date) =>
                   date.toLocaleDateString("en-US", {
                     year: "numeric",
@@ -161,11 +162,12 @@ function BoothBookForm() {
                     <div className="flex flex-col gap-6 md:flex-row">
                       {/* Poster Section */}
                       <div className="w-full md:w-2/5 lg:w-1/3">
-                        <div className="relative w-full overflow-hidden md:h-full">
-                          <img
+                        <div className="relative aspect-9/16 h-48 w-full overflow-hidden rounded-xl md:h-full">
+                          <Image
                             src={ex.posterPicture}
                             alt={ex.name}
-                            className="h-48 w-full rounded-xl border border-pink-100 object-cover shadow-md transition-transform duration-300 hover:scale-105 md:h-full"
+                            fill
+                            className="border border-pink-100 object-cover shadow-md"
                           />
                         </div>
                       </div>

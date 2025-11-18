@@ -111,7 +111,7 @@ export default function BookingDetailPage() {
 
   const startDate = new Date(exhibition.startDate);
   const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + exhibition.durationDay);
+  endDate.setDate(startDate.getDate() + exhibition.durationDay - 1);
 
   const handleOpenEditDialog = () => {
     setEditBoothType(booking.boothType);

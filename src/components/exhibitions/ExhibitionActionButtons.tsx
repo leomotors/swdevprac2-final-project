@@ -54,7 +54,7 @@ export function ExhibitionActionButtons({
   // Wrap the Button in a Link that passes the exhibitionId
   // as a query param.
   return (
-    <Link href={`/boothBook?exhibition=${exhibitionId}`}>
+    <Link href={`/booking/create?exhibition=${exhibitionId}`}>
       <Button className="w-full bg-linear-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">
         Book this Exhibition
       </Button>
