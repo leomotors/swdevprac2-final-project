@@ -27,7 +27,6 @@ export default function ExhibitionCreatePage() {
     );
   }
 
-  // ...existing code...
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [venue, setVenue] = useState("");
@@ -120,7 +119,7 @@ export default function ExhibitionCreatePage() {
   }
 
   return (
-    <main className="mx-auto max-w-[900px] rounded-xl border border-[#FFDEE9] bg-white p-6 shadow-xl">
+    <main className="mx-auto my-10 max-w-[900px] rounded-xl border border-[#FFDEE9] bg-white p-5 pt-8 pb-12 shadow-xl">
       <header className="mb-6 text-center">
         <h1 className="text-3xl text-[#FF69B4]">Create Your Exhibition</h1>
         <p className="text-gray-500">

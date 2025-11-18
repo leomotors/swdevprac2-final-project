@@ -41,7 +41,7 @@ export function ExhibitionActionButtons({
   // Admin user
   if (user.role === "admin") {
     return (
-      <Link href={`/exhibitions/${exhibitionId}/manage`}>
+      <Link href={`/exhibitions/${exhibitionId}`}>
         <Button className="w-full bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
           Manage Exhibition
         </Button>
