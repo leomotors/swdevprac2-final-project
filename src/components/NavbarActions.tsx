@@ -53,14 +53,24 @@ export default function NavbarActions() {
               </div>
 
               {user?.role === "admin" ? (
-                <Link href="/booking">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-2 text-gray-700 hover:bg-pink-50 hover:text-pink-700"
-                  >
-                    All Bookings
-                  </Button>
-                </Link>
+                <>
+                  <Link href="/booking">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2 text-gray-700 hover:bg-pink-50 hover:text-pink-700"
+                    >
+                      All Bookings
+                    </Button>
+                  </Link>
+                  <Link href="/exhibitionCreating">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2 text-gray-700 hover:bg-pink-50 hover:text-pink-700"
+                    >
+                      Create Exhibition
+                    </Button>
+                  </Link>
+                </>
               ) : (
                 <>
                   <Link href="/booking">

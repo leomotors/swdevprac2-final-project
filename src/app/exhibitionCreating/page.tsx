@@ -174,7 +174,7 @@ export default function ExhibitionCreatePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <div>
               <label className="block font-bold text-[#FF69B4]">
                 Duration (days)

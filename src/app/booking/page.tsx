@@ -39,6 +39,7 @@ export default function BookingsPage() {
   }
 
   const bookings = bookingsData?.data || [];
+  console.log("Bookings:", bookings);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -52,7 +53,7 @@ export default function BookingsPage() {
   return (
     <main className="min-h-screen p-8 py-16">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex flex-col items-center justify-between gap-5 md:flex-row md:gap-0">
           <div>
             <h1
               className="pb-2 text-5xl font-bold"

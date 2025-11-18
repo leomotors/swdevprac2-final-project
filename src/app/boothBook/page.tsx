@@ -161,7 +161,7 @@ function BoothBookForm() {
                     <div className="flex flex-col gap-6 md:flex-row">
                       {/* Poster Section */}
                       <div className="w-full md:w-2/5 lg:w-1/3">
-                        <div className="relative aspect-9/16 w-full overflow-hidden md:h-full">
+                        <div className="relative w-full overflow-hidden md:h-full">
                           <img
                             src={ex.posterPicture}
                             alt={ex.name}
