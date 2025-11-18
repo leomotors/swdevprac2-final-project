@@ -3,7 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 import Navbar from "@/components/Navbar";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "Yuri Exhibition Booth Booking",
@@ -18,10 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-linear-to-b from-[#FFDEE9] via-[#B5EAEA] to-[#FFCBCB] antialiased">
-        <AuthProvider>
+        <Providers>
           <Navbar />
           {children}
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

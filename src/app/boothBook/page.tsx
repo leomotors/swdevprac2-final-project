@@ -1,59 +1,55 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import React, { Suspense, useState } from "react";
+
 import { useAuth } from "@/contexts/AuthContext";
-import { serverClient } from "@/libs/api/server";
+import { useMutation, useQuery } from "@/libs/api";
 
 function BoothBookForm() {
   const { user, isLoading, isAuthenticated } = useAuth();
   const searchParams = useSearchParams();
 
-  const [exhibitions, setExhibitions] = useState<any[]>([]);
-  const [selectedExhibition, setSelectedExhibition] = useState<string>("");
-  const [boothType, setBoothType] = useState<string>("small");
+  const [boothType, setBoothType] = useState<"small" | "big">("small");
   const [amount, setAmount] = useState<number>(1);
   const [message, setMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function fetchExhibitionsAndSetDefault() {
-      try {
-        const { data, error } = await serverClient.GET("/exhibitions");
+  const bookingMutation = useMutation("post", "/booking");
 
-        let bookableExhibitions: any[] = [];
+  const { data: exhibitionsData } = useQuery("get", "/exhibitions");
 
-        if (data?.success && Array.isArray(data?.data)) {
-          bookableExhibitions = data.data.filter((ex: any) => {
-            const exStartDate = new Date(ex.startDate);
-            const today = new Date();
-            exStartDate.setHours(0, 0, 0, 0);
-            today.setHours(0, 0, 0, 0);
-            return exStartDate >= today;
-          });
-
-          setExhibitions(bookableExhibitions);
-        }
-
-        const exhibitionFromQuery = searchParams.get("exhibition");
-
-        if (exhibitionFromQuery) {
-          console.log("Exhibition from query:", exhibitionFromQuery);
-          const exhibitionExists = bookableExhibitions.some(
-            (ex: any) => ex._id === exhibitionFromQuery,
-          );
-
-          if (exhibitionExists) {
-            setSelectedExhibition(exhibitionFromQuery);
-          }
-        }
-      } catch (err) {
-        setMessage("Failed to load exhibitions.");
-      }
+  const exhibitions = React.useMemo(() => {
+    if (!exhibitionsData?.success || !Array.isArray(exhibitionsData?.data)) {
+      return [];
     }
 
-    fetchExhibitionsAndSetDefault();
-  }, [searchParams]);
+    return exhibitionsData.data.filter((ex) => {
+      const exStartDate = new Date(ex.startDate);
+      const today = new Date();
+      exStartDate.setHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
+      return exStartDate >= today;
+    });
+  }, [exhibitionsData]);
+
+  const exhibitionFromQuery = searchParams.get("exhibition");
+
+  const [selectedExhibition, setSelectedExhibition] = useState<string>("");
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  // Initialize selected exhibition from query params once
+  if (!hasInitialized && exhibitionFromQuery && exhibitions.length > 0) {
+    const exhibitionExists = exhibitions.some(
+      (ex) => ex._id === exhibitionFromQuery,
+    );
+    if (exhibitionExists) {
+      console.log("Exhibition from query:", exhibitionFromQuery);
+      setSelectedExhibition(exhibitionFromQuery);
+      setHasInitialized(true);
+    } else if (exhibitions.length > 0) {
+      setHasInitialized(true);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -79,71 +75,44 @@ function BoothBookForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
-    setLoading(true);
 
     if (!selectedExhibition) {
       setMessage("Please select an exhibition.");
-      setLoading(false);
       return;
     }
     if (!["small", "big"].includes(boothType)) {
       setMessage("Booth type must be small or big.");
-      setLoading(false);
       return;
     }
     if (amount < 1) {
       setMessage("Amount must be at least 1.");
-      setLoading(false);
       return;
     }
-
-    const token =
-      typeof window !== "undefined"
-        ? localStorage.getItem("accessToken")
-        : null;
-    if (!token) {
-      setMessage("You must be logged in to book a booth.");
-      setLoading(false);
-      return;
-    }
-
-    const payload = {
-      exhibition: selectedExhibition,
-      boothType,
-      amount,
-    };
 
     try {
-      const res = await fetch("http://localhost:5003/api/v1/booking", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const result = await bookingMutation.mutateAsync({
+        body: {
+          exhibition: selectedExhibition,
+          boothType,
+          amount,
         },
-        body: JSON.stringify(payload),
       });
-      const json = await res.json();
-      if (res.status === 201 && json.success) {
-        setMessage("Booth booked successfully!");
-        setAmount(1);
-        // Update available booth quotas immediately
-        setExhibitions((prev) =>
-          prev.map((ex) => {
-            if (ex._id !== selectedExhibition) return ex;
-            if (boothType === "small") {
-              return { ...ex, smallBoothQuota: ex.smallBoothQuota - amount };
-            } else {
-              return { ...ex, bigBoothQuota: ex.bigBoothQuota - amount };
-            }
-          }),
-        );
-      } else {
-        setMessage(json?.message || json?.error || "Failed to book booth.");
+
+      if (!result?.success) {
+        setMessage("Failed to book booth. Please try again.");
+        return;
       }
-    } catch (err) {
-      setMessage("Request failed — see console");
+
+      setMessage("Booth booked successfully!");
+      setAmount(1);
+      // Note: Exhibition data will be automatically refetched/updated by React Query
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "message" in err) {
+        setMessage(`Booking error: ${err.message}`);
+      } else {
+        setMessage(`Request failed: ${err}`);
+      }
     }
-    setLoading(false);
   }
 
   return (
@@ -292,10 +261,10 @@ function BoothBookForm() {
           <div className="flex items-center justify-center gap-3">
             <button
               type="submit"
-              disabled={loading}
+              disabled={bookingMutation.isPending}
               className="rounded-lg border-none bg-[#FF69B4] px-4 py-2.5 text-white shadow-lg shadow-pink-400/50 disabled:opacity-60"
             >
-              {loading ? "Booking..." : "Book Booth"}
+              {bookingMutation.isPending ? "Booking..." : "Book Booth"}
             </button>
           </div>
         </form>
