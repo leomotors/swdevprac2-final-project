@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import NavbarActions from "./NavbarActions";
 
 export default function Navbar() {

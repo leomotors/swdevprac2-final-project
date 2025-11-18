@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // Your existing pattern
       { protocol: "https", hostname: "storage.leomotors.me" },
-      
+
       // The new pattern for gstatic.com
       {
         protocol: "https",

@@ -852,18 +852,7 @@ export interface components {
             readonly updatedAt: string;
         };
         PopulatedBooking: components["schemas"]["BookingResponse"] & {
-            /** @description Reference to the exhibition being booked */
-            exhibition: {
-                _id: string;
-                name: string;
-                description: string;
-                venue: string;
-                /** Format: date-time */
-                startDate: string;
-                durationDay: number;
-                smallBoothQuota: number;
-                bigBoothQuota: number;
-            };
+            exhibition: components["schemas"]["ExhibitionResponse"];
         };
         CreateExhibitionRequest: {
             /** @description Name of the exhibition */

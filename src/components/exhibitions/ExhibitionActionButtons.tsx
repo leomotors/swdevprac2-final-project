@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+
 import { useAuth } from "@/contexts/AuthContext";
+
 import { Button } from "../ui/button";
 
 interface ExhibitionActionButtonsProps {

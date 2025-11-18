@@ -12,6 +12,8 @@
     "codegen": "pnpm openapi-typescript http://localhost:5003/openapi.json -o ./src/libs/api/schema.d.ts"
   },
   "dependencies": {
+    "@radix-ui/react-alert-dialog": "^1.1.15",
+    "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-select": "^2.2.6",

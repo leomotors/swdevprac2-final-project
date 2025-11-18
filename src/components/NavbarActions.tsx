@@ -38,12 +38,6 @@ export default function NavbarActions() {
             Create Exhibition
           </Link>
         )}
-        <Link
-          href="/booking"
-          className="text-gray-700 transition-colors hover:text-pink-600"
-        >
-          {user?.role === "admin" ? "All Bookings" : "My Bookings"}
-        </Link>
 
         <Popover>
           <PopoverTrigger asChild>
@@ -55,7 +49,7 @@ export default function NavbarActions() {
               {user?.name}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-48 rounded-2xl border-gray-200/50 bg-white/50 p-2 backdrop-blur-xs">
+          <PopoverContent className="w-56 rounded-2xl border-gray-200/50 bg-white/50 p-2 backdrop-blur-xs">
             <div className="space-y-1">
               <div className="px-3 py-2">
                 <p className="text-sm font-medium text-gray-800">
@@ -66,6 +60,37 @@ export default function NavbarActions() {
                   {user?.role}
                 </p>
               </div>
+
+              {user?.role === "admin" ? (
+                <Link href="/booking">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2 text-gray-700 hover:bg-pink-50 hover:text-pink-700"
+                  >
+                    All Bookings
+                  </Button>
+                </Link>
+              ) : (
+                <>
+                  <Link href="/booking">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2 text-gray-700 hover:bg-pink-50 hover:text-pink-700"
+                    >
+                      My Bookings
+                    </Button>
+                  </Link>
+                  <Link href="/boothBook">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2 text-gray-700 hover:bg-pink-50 hover:text-pink-700"
+                    >
+                      Create Booking
+                    </Button>
+                  </Link>
+                </>
+              )}
+
               <Button
                 variant="ghost"
                 className="w-full justify-start gap-2 border-red-300 text-red-600 hover:border hover:bg-red-50 hover:text-red-700"
