@@ -99,7 +99,7 @@ export default function BookingsPage() {
               const exhibition = booking.exhibition;
               const startDate = new Date(exhibition.startDate);
               const endDate = new Date(startDate);
-              endDate.setDate(startDate.getDate() + exhibition.durationDay);
+              endDate.setDate(startDate.getDate() + exhibition.durationDay - 1);
 
               return (
                 <Card

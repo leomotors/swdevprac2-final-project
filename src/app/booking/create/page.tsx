@@ -150,7 +150,7 @@ function BoothBookForm() {
                 if (!ex) return null;
                 const startDate = new Date(ex.startDate);
                 const endDate = new Date(startDate);
-                endDate.setDate(startDate.getDate() + ex.durationDay);
+                endDate.setDate(startDate.getDate() + ex.durationDay - 1);
                 const formatDate = (date: Date) =>
                   date.toLocaleDateString("en-US", {
                     year: "numeric",

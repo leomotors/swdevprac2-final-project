@@ -15,7 +15,7 @@ interface ExhibitionCardProps {
 export function ExhibitionCard({ exhibition }: ExhibitionCardProps) {
   const startDate = new Date(exhibition.startDate);
   const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + exhibition.durationDay);
+  endDate.setDate(startDate.getDate() + exhibition.durationDay - 1);
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {

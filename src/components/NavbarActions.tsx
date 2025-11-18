@@ -34,7 +34,7 @@ export default function NavbarActions() {
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
-              className="cursor-pointer rounded-full border border-pink-500/30 bg-white/40 px-4 py-2 font-medium text-gray-800 transition-colors hover:bg-pink-50"
+              className="rounded-full border border-pink-500/30 bg-white/40 px-4 py-2 font-medium text-gray-800 transition-colors hover:bg-pink-50"
             >
               <User className="size-4" />
               {user?.name}
