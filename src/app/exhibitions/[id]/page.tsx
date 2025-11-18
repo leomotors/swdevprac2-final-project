@@ -177,43 +177,56 @@ export default function ExhibitionDetailPage() {
         </Button>
 
         <Card className="overflow-hidden border-gray-200 bg-white/60 backdrop-blur-sm">
-          <div className="relative h-48 w-full sm:h-64">
-            <Image
-              src={exhibition.posterPicture || "/placeholder.png"}
-              alt={exhibition.name}
-              fill
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-4 sm:p-8">
-              <h1 className="text-3xl font-bold text-white shadow-lg sm:text-4xl">
-                {exhibition.name}
-              </h1>
-            </div>
-          </div>
-
           <CardContent className="space-y-6 p-4 sm:p-6 md:p-8">
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <h3 className="font-semibold text-gray-500">Description</h3>
-                <p className="text-gray-800">{exhibition.description}</p>
+            <h1
+              className="pb-2 text-center text-4xl font-bold sm:text-5xl"
+              style={{
+                background: "linear-gradient(to right, #ec4899, #9333ea)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                display: "inline-block",
+              }}
+            >
+              {exhibition.name}
+            </h1>
+
+            <div className="flex flex-col gap-6 md:flex-row">
+              {/* Poster Section - 9:16 Portrait */}
+              <div className="w-full md:w-1/3">
+                <div className="relative aspect-9/16 w-full overflow-hidden rounded-lg border border-pink-100 shadow-md">
+                  <Image
+                    src={exhibition.posterPicture || "/placeholder.png"}
+                    alt={exhibition.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               </div>
-              <div className="space-y-4 rounded-lg bg-gray-50 p-4">
-                <p className="flex items-center gap-2 text-gray-700">
-                  <span className="font-semibold">📍 Venue:</span>
-                  <span>{exhibition.venue}</span>
-                </p>
-                <p className="flex items-center gap-2 text-gray-700">
-                  <span className="font-semibold">📅 Dates:</span>
-                  <span>
-                    {formatDate(exhibition.startDate)} -{" "}
-                    {formatDate(endDate.toISOString())}
-                  </span>
-                </p>
-                <p className="flex items-center gap-2 text-gray-700">
-                  <span className="font-semibold">⏰ Duration:</span>
-                  <span>{exhibition.durationDay} days</span>
-                </p>
+
+              {/* Content Section */}
+              <div className="flex-1 space-y-6">
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-gray-500">Description</h3>
+                  <p className="text-gray-800">{exhibition.description}</p>
+                </div>
+                <div className="space-y-4 rounded-lg bg-gray-50 p-4">
+                  <p className="flex items-center gap-2 text-gray-700">
+                    <span className="font-semibold">📍 Venue:</span>
+                    <span>{exhibition.venue}</span>
+                  </p>
+                  <p className="flex items-center gap-2 text-gray-700">
+                    <span className="font-semibold">📅 Dates:</span>
+                    <span>
+                      {formatDate(exhibition.startDate)} -{" "}
+                      {formatDate(endDate.toISOString())}
+                    </span>
+                  </p>
+                  <p className="flex items-center gap-2 text-gray-700">
+                    <span className="font-semibold">⏰ Duration:</span>
+                    <span>{exhibition.durationDay} days</span>
+                  </p>
+                </div>
               </div>
             </div>
 
