@@ -2,9 +2,23 @@
 import React, { useState } from "react";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useMutation } from "@/libs/api";
+import { getError } from "@/libs/utils";
 
 export default function ExhibitionCreatePage() {
   const { user, isLoading, isAuthenticated } = useAuth();
+
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [venue, setVenue] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [durationDay, setDurationDay] = useState<number>(1);
+  const [smallBoothQuota, setSmallBoothQuota] = useState<number>(0);
+  const [bigBoothQuota, setBigBoothQuota] = useState<number>(0);
+  const [posterPicture, setPosterPicture] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
+
+  const createMutation = useMutation("post", "/exhibitions");
 
   // Only allow admin
   if (isLoading) {
@@ -27,16 +41,6 @@ export default function ExhibitionCreatePage() {
     );
   }
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [venue, setVenue] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [durationDay, setDurationDay] = useState<number>(1);
-  const [smallBoothQuota, setSmallBoothQuota] = useState<number>(0);
-  const [bigBoothQuota, setBigBoothQuota] = useState<number>(0);
-  const [posterPicture, setPosterPicture] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
@@ -49,54 +53,31 @@ export default function ExhibitionCreatePage() {
       return;
     }
 
-    // --- NEW VALIDATION ---
     // Validate the start date
-    const selectedDate = new Date(`${startDate}T00:00:00`); // Treat date as local midnight
+    const selectedDate = new Date(`${startDate}T00:00:00`);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Get today's date at midnight (local)
+    today.setHours(0, 0, 0, 0);
 
     if (selectedDate < today) {
       setMessage("Start date cannot be earlier than today.");
       return;
     }
-    // --- END NEW VALIDATION ---
-
-    const payload = {
-      name,
-      description,
-      venue,
-      startDate,
-      durationDay,
-      smallBoothQuota,
-      bigBoothQuota,
-      posterPicture,
-    };
 
     try {
-      const token =
-        typeof window !== "undefined"
-          ? localStorage.getItem("accessToken")
-          : null;
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-
-      if (!token) {
-        setMessage(
-          "You must be logged in as an admin to create an exhibition.",
-        );
-        return;
-      }
-
-      const res = await fetch("http://localhost:5003/api/v1/exhibitions", {
-        method: "POST",
-        headers,
-        body: JSON.stringify(payload),
+      const result = await createMutation.mutateAsync({
+        body: {
+          name,
+          description,
+          venue,
+          startDate,
+          durationDay,
+          smallBoothQuota,
+          bigBoothQuota,
+          posterPicture,
+        },
       });
 
-      const json = await res.json();
-      if (res.status === 201 || json.success) {
+      if (result?.success) {
         setMessage("Exhibition created successfully");
         // reset form
         setName("");
@@ -108,13 +89,10 @@ export default function ExhibitionCreatePage() {
         setBigBoothQuota(0);
         setPosterPicture("");
       } else {
-        setMessage(
-          json?.error || json?.message || "Failed to create exhibition",
-        );
+        setMessage("Failed to create exhibition");
       }
-    } catch (err) {
-      console.error(err);
-      setMessage("Request failed — see console");
+    } catch (error) {
+      setMessage(getError(error));
     }
   }
 
@@ -228,9 +206,10 @@ export default function ExhibitionCreatePage() {
           <div className="flex items-center gap-3">
             <button
               type="submit"
-              className="rounded-lg border-none bg-[#FF69B4] px-4 py-2.5 text-white shadow-lg shadow-pink-400/50"
+              disabled={createMutation.isPending}
+              className="rounded-lg border-none bg-[#FF69B4] px-4 py-2.5 text-white shadow-lg shadow-pink-400/50 disabled:opacity-60"
             >
-              Create Exhibition
+              {createMutation.isPending ? "Creating..." : "Create Exhibition"}
             </button>
             <button
               type="button"
