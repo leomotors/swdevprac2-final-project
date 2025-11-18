@@ -3,6 +3,7 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { serverClient } from "@/libs/api/server";
 
 function BoothBookForm() {
   const { user, isLoading, isAuthenticated } = useAuth();
@@ -18,12 +19,12 @@ function BoothBookForm() {
   useEffect(() => {
     async function fetchExhibitionsAndSetDefault() {
       try {
-        const res = await fetch("http://localhost:5003/api/v1/exhibitions");
-        const json = await res.json();
+        const { data, error } = await serverClient.GET("/exhibitions");
+
         let bookableExhibitions: any[] = [];
 
-        if (json.success && Array.isArray(json.data)) {
-          bookableExhibitions = json.data.filter((ex: any) => {
+        if (data?.success && Array.isArray(data?.data)) {
+          bookableExhibitions = data.data.filter((ex: any) => {
             const exStartDate = new Date(ex.startDate);
             const today = new Date();
             exStartDate.setHours(0, 0, 0, 0);

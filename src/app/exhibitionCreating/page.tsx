@@ -41,12 +41,25 @@ export default function ExhibitionCreatePage() {
     e.preventDefault();
     setMessage(null);
 
+    // Existing validation
     if (!name.trim() || !description.trim() || !venue.trim() || !startDate) {
       setMessage(
         "Please fill required fields: name, description, venue, start date.",
       );
       return;
     }
+
+    // --- NEW VALIDATION ---
+    // Validate the start date
+    const selectedDate = new Date(`${startDate}T00:00:00`); // Treat date as local midnight
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Get today's date at midnight (local)
+
+    if (selectedDate < today) {
+      setMessage("Start date cannot be earlier than today.");
+      return;
+    }
+    // --- END NEW VALIDATION ---
 
     const payload = {
       name,
