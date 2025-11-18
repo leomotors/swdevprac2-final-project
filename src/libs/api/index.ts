@@ -5,7 +5,7 @@ import { authMiddleware } from "./middleware";
 import { paths } from "./schema";
 
 export const client = createFetchClient<paths>({
-  baseUrl: "http://localhost:5003/api/v1",
+  baseUrl: process.env.NEXT_PUBLIC_API_URL,
 });
 
 client.use(authMiddleware);

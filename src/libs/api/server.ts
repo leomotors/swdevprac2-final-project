@@ -7,6 +7,6 @@ import { paths } from "./schema";
  * Used for public API calls in Server Components
  */
 export const serverClient = createClient<paths>({
-  baseUrl: "http://localhost:5003/api/v1",
+  baseUrl: process.env.NEXT_PUBLIC_API_URL,
   cache: "no-store", // Ensures fresh data on each request
 });
