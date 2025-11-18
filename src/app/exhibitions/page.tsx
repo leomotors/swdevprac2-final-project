@@ -1,4 +1,5 @@
 import { ExhibitionCard } from "@/components/exhibitions/ExhibitionCard";
+import { ExhibitionsHeader } from "@/components/exhibitions/ExhibitionsHeader";
 import { serverClient } from "@/libs/api/server";
 
 export const dynamic = "force-dynamic";
@@ -48,12 +49,7 @@ export default async function ExhibitionsPage() {
   return (
     <main className="flex min-h-screen flex-col items-center p-8 py-16">
       <div className="w-full max-w-6xl">
-        <h1 className="mb-4 bg-linear-to-r from-pink-500 to-purple-600 bg-clip-text text-center text-5xl font-bold text-transparent">
-          Exhibitions
-        </h1>
-        <p className="mb-12 text-center text-xl text-gray-600">
-          Discover and book booths for our upcoming exhibitions
-        </p>
+        <ExhibitionsHeader />
 
         <div className="grid gap-8 lg:grid-cols-2">
           {exhibitions.map((exhibition) => (
