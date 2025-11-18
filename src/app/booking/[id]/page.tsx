@@ -29,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMutation, useQuery } from "@/libs/api";
+import { getError } from "@/libs/utils";
 
 export default function BookingDetailPage() {
   const params = useParams();
@@ -140,8 +141,8 @@ export default function BookingDetailPage() {
       } else {
         setMessage("Failed to update booking.");
       }
-    } catch {
-      setMessage("Failed to update booking. Please try again.");
+    } catch (error: unknown) {
+      setMessage(getError(error));
     }
   };
 
@@ -315,7 +316,7 @@ export default function BookingDetailPage() {
               </div>
             </div>
 
-            {message && (
+            {message && !isEditDialogOpen && (
               <div className="rounded-lg border border-pink-200 bg-pink-50 p-4">
                 <p className="text-pink-700">{message}</p>
               </div>
@@ -354,6 +355,17 @@ export default function BookingDetailPage() {
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
+              {message && isEditDialogOpen && (
+                <div
+                  className={`rounded-lg border p-3 ${
+                    message.includes("success")
+                      ? "border-green-200 bg-green-50 text-green-700"
+                      : "border-red-200 bg-red-50 text-red-700"
+                  }`}
+                >
+                  <p className="text-sm">{message}</p>
+                </div>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="boothType">Booth Type</Label>
                 <div className="flex gap-4">

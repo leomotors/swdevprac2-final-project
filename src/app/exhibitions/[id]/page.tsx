@@ -30,6 +30,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMutation, useQuery } from "@/libs/api";
 import type { components } from "@/libs/api/schema";
+import { getError } from "@/libs/utils";
 
 type UpdateExhibitionForm = components["schemas"]["UpdateExhibitionRequest"] & {
   startDate: string;
@@ -136,11 +137,7 @@ export default function ExhibitionDetailPage() {
         setMessage("Failed to update exhibition. Please try again.");
       }
     } catch (error: unknown) {
-      const errorMessage =
-        error && typeof error === "object" && "message" in error
-          ? `${error.message}`
-          : "An unexpected error occurred. Please try again.";
-      setMessage(errorMessage);
+      setMessage(getError(error));
     }
   };
 
@@ -220,7 +217,7 @@ export default function ExhibitionDetailPage() {
               </div>
             </div>
 
-            {message && (
+            {message && !isEditDialogOpen && (
               <div
                 className={`rounded-lg border p-4 ${
                   message.includes("success")
@@ -273,6 +270,17 @@ export default function ExhibitionDetailPage() {
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
+                {message && isEditDialogOpen && (
+                  <div
+                    className={`rounded-lg border p-3 ${
+                      message.includes("success")
+                        ? "border-green-200 bg-green-50 text-green-700"
+                        : "border-red-200 bg-red-50 text-red-700"
+                    }`}
+                  >
+                    <p className="text-sm">{message}</p>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 items-center gap-2 sm:grid-cols-4 sm:gap-4">
                   <Label htmlFor="name" className="sm:text-right">
                     Name
