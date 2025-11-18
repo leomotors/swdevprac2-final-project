@@ -13,6 +13,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { client } from "@/libs/api";
@@ -32,6 +39,9 @@ export default function LoginPage() {
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerTel, setRegisterTel] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
+  const [registerRole, setRegisterRole] = useState<"member" | "admin">(
+    "member",
+  );
   const [registerError, setRegisterError] = useState("");
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
 
@@ -77,6 +87,7 @@ export default function LoginPage() {
           email: registerEmail,
           tel: registerTel,
           password: registerPassword,
+          role: registerRole,
         },
       });
 
@@ -230,6 +241,24 @@ export default function LoginPage() {
                       disabled={isRegisterLoading}
                       className="bg-white/80"
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="register-role">Role</Label>
+                    <Select
+                      value={registerRole}
+                      onValueChange={(value) =>
+                        setRegisterRole(value as "member" | "admin")
+                      }
+                      disabled={isRegisterLoading}
+                    >
+                      <SelectTrigger id="register-role" className="bg-white/80">
+                        <SelectValue placeholder="Select your role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="member">Member</SelectItem>
+                        <SelectItem value="admin">Admin</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   {registerError && (
                     <p className="text-sm font-medium text-red-500">
