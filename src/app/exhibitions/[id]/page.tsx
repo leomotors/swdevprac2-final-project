@@ -341,6 +341,7 @@ export default function ExhibitionDetailPage() {
                     value={editExhibition.startDate}
                     onChange={handleInputChange}
                     className="sm:col-span-3"
+                    min={new Date().toISOString().split("T")[0]}
                   />
                 </div>
                 <div className="grid grid-cols-1 items-center gap-2 sm:grid-cols-4 sm:gap-4">

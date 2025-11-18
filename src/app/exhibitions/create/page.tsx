@@ -146,6 +146,7 @@ export default function ExhibitionCreatePage() {
               <input
                 type="date"
                 value={startDate}
+                min={new Date().toISOString().split("T")[0]}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="w-full rounded-lg border border-[#FFCBCB] bg-[#FFF0F5] p-2.5 focus:ring focus:ring-pink-500 focus:outline-none"
               />
