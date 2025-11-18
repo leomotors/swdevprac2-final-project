@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -27,9 +27,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMutation, useQuery } from "@/libs/api";
+import type { components } from "@/libs/api/schema";
+
+type UpdateExhibitionForm = components["schemas"]["UpdateExhibitionRequest"] & {
+  startDate: string;
+};
 
 export default function ExhibitionDetailPage() {
   const params = useParams();
@@ -53,7 +57,8 @@ export default function ExhibitionDetailPage() {
 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [editExhibition, setEditExhibition] = useState<any>(null);
+  const [editExhibition, setEditExhibition] =
+    useState<UpdateExhibitionForm | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   const isLoading = isAuthLoading || isLoadingExhibition;
@@ -108,6 +113,8 @@ export default function ExhibitionDetailPage() {
   };
 
   const handleUpdateExhibition = async () => {
+    if (!editExhibition) return;
+
     try {
       const result = await updateMutation.mutateAsync({
         params: {
@@ -115,7 +122,9 @@ export default function ExhibitionDetailPage() {
         },
         body: {
           ...editExhibition,
-          durationDay: Number(editExhibition.durationDay),
+          durationDay: editExhibition.durationDay
+            ? Number(editExhibition.durationDay)
+            : undefined,
         },
       });
 
@@ -126,10 +135,12 @@ export default function ExhibitionDetailPage() {
       } else {
         setMessage("Failed to update exhibition. Please try again.");
       }
-    } catch (error: any) {
-      setMessage(
-        error?.message || "An unexpected error occurred. Please try again.",
-      );
+    } catch (error: unknown) {
+      const errorMessage =
+        error && typeof error === "object" && "message" in error
+          ? `${error.message}`
+          : "An unexpected error occurred. Please try again.";
+      setMessage(errorMessage);
     }
   };
 
@@ -151,6 +162,8 @@ export default function ExhibitionDetailPage() {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
+    if (!editExhibition) return;
+
     const { name, value } = e.target;
     setEditExhibition({ ...editExhibition, [name]: value });
   };

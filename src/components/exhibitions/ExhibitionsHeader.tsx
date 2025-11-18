@@ -20,7 +20,7 @@ export function ExhibitionsHeader() {
         </p>
       </div>
       {user?.role === "admin" && (
-        <Link href="/exhibitionCreating">
+        <Link href="/exhibitions/create">
           <Button className="rounded-lg bg-[#FF69B4] px-6 py-3 text-white shadow-lg shadow-pink-400/50 hover:bg-pink-600">
             <Plus className="mr-2 h-5 w-5" />
             Create Exhibition
