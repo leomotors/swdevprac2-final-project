@@ -361,6 +361,20 @@ export default function ExhibitionDetailPage() {
                     <span>days</span>
                   </div>
                 </div>
+                <div className="grid grid-cols-1 items-center gap-2 sm:grid-cols-4 sm:gap-4">
+                  <Label htmlFor="posterPicture" className="sm:text-right">
+                    Poster URL
+                  </Label>
+                  <Input
+                    id="posterPicture"
+                    name="posterPicture"
+                    type="url"
+                    value={editExhibition.posterPicture}
+                    onChange={handleInputChange}
+                    placeholder="https://..."
+                    className="sm:col-span-3"
+                  />
+                </div>
               </div>
               <DialogFooter>
                 <Button
